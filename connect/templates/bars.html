@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Updatable Charts (4 of 4)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+</head>
+<body>
+	<div id="bars"></div>
+	<div id="line"></div>
+	<div id="pie"></div>
+	<div id="pie2"></div>
+
+</body>
+<script type="text/javascript">
+
+var flatData = JSON.parse('{{ df | escapejs}}');
+
+//var flatData = [{"Date":-5359910400000,"Prey":"Spain","Ship":"Fancy","bootyAmount":52243},{"Date":-5356022400000,"Prey":"France","Ship":"Fancy","bootyAmount":794825},{"Date":-5337878400000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":369367},{"Date":-5337705600000,"Prey":"France","Ship":"Fancy","bootyAmount":192255},{"Date":-5313081600000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":612271},{"Date":-5240332800000,"Prey":"France","Ship":"Black Pearl","bootyAmount":101652},{"Date":-5238259200000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":58890},{"Date":-5231779200000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":469638},{"Date":-5179075200000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":252598},{"Date":-5149612800000,"Prey":"Netherlands","Ship":"Fancy","bootyAmount":976992},{"Date":-5144601600000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":187366},{"Date":-5140281600000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":254186},{"Date":-5132160000000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":15669},{"Date":-5128617600000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":304248},{"Date":-5111337600000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":667011},{"Date":-5104512000000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":7530},{"Date":-5062348800000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":593398},{"Date":-5046883200000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":831228},{"Date":-5034441600000,"Prey":"England","Ship":"Fancy","bootyAmount":180542},{"Date":-5026579200000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":250053},{"Date":-4975776000000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":610227},{"Date":-4935513600000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":372640},{"Date":-4909852800000,"Prey":"France","Ship":"Fancy","bootyAmount":91385},{"Date":-4898448000000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":827365},{"Date":-4889548800000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":838772},{"Date":-4876588800000,"Prey":"France","Ship":"Fancy","bootyAmount":647636},{"Date":-4853433600000,"Prey":"Spain","Ship":"Whydah","bootyAmount":469179},{"Date":-4822675200000,"Prey":"France","Ship":"Black Pearl","bootyAmount":828589},{"Date":-4812566400000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":948012},{"Date":-4798396800000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":884700},{"Date":-4784918400000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":420595},{"Date":-4767465600000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":972320},{"Date":-4754764800000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":695997},{"Date":-4745692800000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":324334},{"Date":-4665600000000,"Prey":"Spain","Ship":"Fancy","bootyAmount":769703},{"Date":-4660588800000,"Prey":"Spain","Ship":"Fancy","bootyAmount":916618},{"Date":-4642704000000,"Prey":"England","Ship":"Black Pearl","bootyAmount":842138},{"Date":-4615142400000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":256250},{"Date":-4614883200000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":88337},{"Date":-4587840000000,"Prey":"France","Ship":"Fancy","bootyAmount":434024},{"Date":-4541961600000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":968290},{"Date":-4537814400000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":891872},{"Date":-4531334400000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":901741},{"Date":-4523558400000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":5077},{"Date":-4520707200000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":65005},{"Date":-4507747200000,"Prey":"Spain","Ship":"Fancy","bootyAmount":548973},{"Date":-4497811200000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":23356},{"Date":-4486406400000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":941034},{"Date":-4475174400000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":576427},{"Date":-4464460800000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":796038},{"Date":-4458153600000,"Prey":"France","Ship":"Black Pearl","bootyAmount":897854},{"Date":-4455907200000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":540397},{"Date":-4445280000000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":13841},{"Date":-4418755200000,"Prey":"France","Ship":"Black Pearl","bootyAmount":837233},{"Date":-4399228800000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":891938},{"Date":-4388947200000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":838918},{"Date":-4361212800000,"Prey":"England","Ship":"Black Pearl","bootyAmount":654807},{"Date":-4329849600000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":458883},{"Date":-4298918400000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":392778},{"Date":-4286736000000,"Prey":"France","Ship":"Fancy","bootyAmount":494052},{"Date":-4284489600000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":370698},{"Date":-4258224000000,"Prey":"Netherlands","Ship":"Queen Anne's Revenge","bootyAmount":138470},{"Date":-4228675200000,"Prey":"France","Ship":"Fancy","bootyAmount":770045},{"Date":-4222022400000,"Prey":"Netherlands","Ship":"Whydah","bootyAmount":796925},{"Date":-4204051200000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":39694},{"Date":-4191782400000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":416505},{"Date":-4184697600000,"Prey":"France","Ship":"Black Pearl","bootyAmount":962323},{"Date":-4175366400000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":639518},{"Date":-4143571200000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":587565},{"Date":-4137436800000,"Prey":"England","Ship":"Fancy","bootyAmount":995821},{"Date":-4133808000000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":270962},{"Date":-4125340800000,"Prey":"Spain","Ship":"Fancy","bootyAmount":385524},{"Date":-4087756800000,"Prey":"Spain","Ship":"Whydah","bootyAmount":59126},{"Date":-4085424000000,"Prey":"Spain","Ship":"Whydah","bootyAmount":181813},{"Date":-4085164800000,"Prey":"England","Ship":"Fancy","bootyAmount":546244},{"Date":-4070390400000,"Prey":"France","Ship":"Whydah","bootyAmount":171989},{"Date":-4066588800000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":380496},{"Date":-4063132800000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":745347},{"Date":-4060454400000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":719692},{"Date":-4055875200000,"Prey":"England","Ship":"Black Pearl","bootyAmount":414503},{"Date":-4051468800000,"Prey":"England","Ship":"Whydah","bootyAmount":497604},{"Date":-4040496000000,"Prey":"France","Ship":"Black Pearl","bootyAmount":195015},{"Date":-4037472000000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":127211},{"Date":-4023907200000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":861438},{"Date":-4015267200000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":194591},{"Date":-4008009600000,"Prey":"France","Ship":"Black Pearl","bootyAmount":209550},{"Date":-4005590400000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":701013},{"Date":-3992630400000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":876206},{"Date":-3982521600000,"Prey":"France","Ship":"Black Pearl","bootyAmount":388209},{"Date":-3963427200000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":635888},{"Date":-3956860800000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":31174},{"Date":-3956688000000,"Prey":"France","Ship":"Black Pearl","bootyAmount":94784},{"Date":-3945110400000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":49279},{"Date":-3942518400000,"Prey":"France","Ship":"Fancy","bootyAmount":751710},{"Date":-3915648000000,"Prey":"England","Ship":"Black Pearl","bootyAmount":67793},{"Date":-3896726400000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":243909},{"Date":-3886704000000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":128734},{"Date":-3883248000000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":638293},{"Date":-3833913600000,"Prey":"England","Ship":"Fancy","bootyAmount":317256},{"Date":-3801427200000,"Prey":"Spain","Ship":"Fancy","bootyAmount":631120}];
+
+var flatData2 = [{"Date":-5339088000000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":385492},{"Date":-5315155200000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":681250},{"Date":-5301158400000,"Prey":"France","Ship":"Whydah","bootyAmount":835921},{"Date":-5293209600000,"Prey":"France","Ship":"Fancy","bootyAmount":951351},{"Date":-5288112000000,"Prey":"Spain","Ship":"Fancy","bootyAmount":749892},{"Date":-5261500800000,"Prey":"Spain","Ship":"Whydah","bootyAmount":554768},{"Date":-5242233600000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":305557},{"Date":-5236531200000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":351190},{"Date":-5221324800000,"Prey":"England","Ship":"Black Pearl","bootyAmount":942122},{"Date":-5217177600000,"Prey":"Netherlands","Ship":"Fancy","bootyAmount":488209},{"Date":-5216745600000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":579277},{"Date":-5201107200000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":63630},{"Date":-5185728000000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":681227},{"Date":-5184691200000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":79964},{"Date":-5121705600000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":546261},{"Date":-5119027200000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":375004},{"Date":-5116953600000,"Prey":"England","Ship":"Black Pearl","bootyAmount":323821},{"Date":-5051030400000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":280818},{"Date":-5013100800000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":418068},{"Date":-5002732800000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":144872},{"Date":-4998758400000,"Prey":"England","Ship":"Whydah","bootyAmount":128650},{"Date":-4997635200000,"Prey":"France","Ship":"Black Pearl","bootyAmount":417366},{"Date":-4946054400000,"Prey":"England","Ship":"Black Pearl","bootyAmount":103152},{"Date":-4925750400000,"Prey":"France","Ship":"Whydah","bootyAmount":128912},{"Date":-4876243200000,"Prey":"England","Ship":"Black Pearl","bootyAmount":247412},{"Date":-4869590400000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":8166},{"Date":-4867603200000,"Prey":"Spain","Ship":"Whydah","bootyAmount":474310},{"Date":-4861468800000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":114060},{"Date":-4825872000000,"Prey":"France","Ship":"Queen Anne's Revenge","bootyAmount":308428},{"Date":-4819737600000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":396273},{"Date":-4790102400000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":1475},{"Date":-4775500800000,"Prey":"Spain","Ship":"Fancy","bootyAmount":767968},{"Date":-4767638400000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":743197},{"Date":-4762540800000,"Prey":"France","Ship":"Black Pearl","bootyAmount":827324},{"Date":-4753209600000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":592380},{"Date":-4724092800000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":838345},{"Date":-4712342400000,"Prey":"France","Ship":"Whydah","bootyAmount":760728},{"Date":-4706812800000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":76246},{"Date":-4701456000000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":258344},{"Date":-4695580800000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":848126},{"Date":-4680201600000,"Prey":"France","Ship":"Black Pearl","bootyAmount":425561},{"Date":-4668278400000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":928745},{"Date":-4651257600000,"Prey":"England","Ship":"Queen Anne's Revenge","bootyAmount":90205},{"Date":-4646592000000,"Prey":"Spain","Ship":"Fancy","bootyAmount":583927},{"Date":-4621363200000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":750437},{"Date":-4613155200000,"Prey":"France","Ship":"Whydah","bootyAmount":728326},{"Date":-4607452800000,"Prey":"Spain","Ship":"Fancy","bootyAmount":558455},{"Date":-4594406400000,"Prey":"France","Ship":"Black Pearl","bootyAmount":614588},{"Date":-4585852800000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":135947},{"Date":-4582915200000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":887550},{"Date":-4578163200000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":883358},{"Date":-4568659200000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":483941},{"Date":-4562870400000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":858172},{"Date":-4535913600000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":291007},{"Date":-4529692800000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":656392},{"Date":-4529001600000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":469762},{"Date":-4515868800000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":926001},{"Date":-4506969600000,"Prey":"England","Ship":"Black Pearl","bootyAmount":253349},{"Date":-4504636800000,"Prey":"Spain","Ship":"Whydah","bootyAmount":722139},{"Date":-4484160000000,"Prey":"England","Ship":"Whydah","bootyAmount":161997},{"Date":-4483296000000,"Prey":"France","Ship":"Black Pearl","bootyAmount":381598},{"Date":-4437417600000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":816505},{"Date":-4397241600000,"Prey":"England","Ship":"Whydah","bootyAmount":528066},{"Date":-4369161600000,"Prey":"Spain","Ship":"Adventure Galley","bootyAmount":467968},{"Date":-4365187200000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":331778},{"Date":-4360867200000,"Prey":"Spain","Ship":"Fancy","bootyAmount":771136},{"Date":-4333824000000,"Prey":"France","Ship":"Whydah","bootyAmount":446058},{"Date":-4268246400000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":866565},{"Date":-4244745600000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":877932},{"Date":-4237660800000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":402449},{"Date":-4234291200000,"Prey":"England","Ship":"Whydah","bootyAmount":770726},{"Date":-4224441600000,"Prey":"France","Ship":"Whydah","bootyAmount":994319},{"Date":-4212691200000,"Prey":"Netherlands","Ship":"Fancy","bootyAmount":719308},{"Date":-4184524800000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":541699},{"Date":-4180896000000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":358265},{"Date":-4169750400000,"Prey":"Netherlands","Ship":"Royal Fortune","bootyAmount":305360},{"Date":-4168022400000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":810151},{"Date":-4114800000000,"Prey":"England","Ship":"Black Pearl","bootyAmount":936185},{"Date":-4110307200000,"Prey":"France","Ship":"Whydah","bootyAmount":851681},{"Date":-4108147200000,"Prey":"France","Ship":"Black Pearl","bootyAmount":704839},{"Date":-4097260800000,"Prey":"Spain","Ship":"Whydah","bootyAmount":412987},{"Date":-4078857600000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":419902},{"Date":-4073068800000,"Prey":"Netherlands","Ship":"Black Pearl","bootyAmount":530764},{"Date":-4051641600000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":239176},{"Date":-4051123200000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":542666},{"Date":-4044556800000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":581354},{"Date":-4031510400000,"Prey":"France","Ship":"Fancy","bootyAmount":529354},{"Date":-4027363200000,"Prey":"France","Ship":"Fancy","bootyAmount":488368},{"Date":-4004899200000,"Prey":"France","Ship":"Black Pearl","bootyAmount":186727},{"Date":-4001356800000,"Prey":"France","Ship":"Whydah","bootyAmount":185245},{"Date":-3987446400000,"Prey":"Spain","Ship":"Fancy","bootyAmount":354605},{"Date":-3975436800000,"Prey":"France","Ship":"Royal Fortune","bootyAmount":677608},{"Date":-3925843200000,"Prey":"Netherlands","Ship":"Adventure Galley","bootyAmount":595936},{"Date":-3911587200000,"Prey":"Spain","Ship":"Royal Fortune","bootyAmount":461740},{"Date":-3874176000000,"Prey":"Spain","Ship":"Black Pearl","bootyAmount":279698},{"Date":-3853267200000,"Prey":"France","Ship":"Adventure Galley","bootyAmount":103234},{"Date":-3824841600000,"Prey":"England","Ship":"Royal Fortune","bootyAmount":836380},{"Date":-3823372800000,"Prey":"England","Ship":"Whydah","bootyAmount":411162},{"Date":-3822595200000,"Prey":"Spain","Ship":"Queen Anne's Revenge","bootyAmount":22741},{"Date":-3797539200000,"Prey":"England","Ship":"Adventure Galley","bootyAmount":847211}];
+
+var preyOrder = ["England", "France", "Spain", "Netherlands"];
+var shipOrder = ['Black Pearl', 'Adventure Galley', "Whydah", "Queen Anne's Revenge", "Fancy", "Royal Fortune" ];
+
+// pivot tables in d3 how awesome!!! this works, just checked
+var bootyByPrey = d3.nest()
+  .key(function(d) { return d.Prey; })
+  	.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData);
+console.log(JSON.stringify(bootyByPrey));
+
+var bootyByPrey2 = d3.nest()
+  .key(function(d) { return d.Prey; })
+  		//got this sort from http://bl.ocks.org/phoebebright/raw/3176159/
+  	.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData2);
+
+var bootyByTime = d3.nest()
+  .key(function(d) { return d.Date; })
+  		//got this sort from http://bl.ocks.org/phoebebright/raw/3176159/
+  	//.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData);
+
+var bootyByTime2 = d3.nest()
+  .key(function(d) { return d.Date; })
+  		//got this sort from http://bl.ocks.org/phoebebright/raw/3176159/
+  	//.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData2);
+  console.log(JSON.stringify(bootyByTime2));
+
+var bootyByShip = d3.nest()
+  .key(function(d) { return d.Ship; })
+  	.sortKeys(function(a,b) { return shipOrder.indexOf(a) - shipOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData);
+
+var bootyByShip2 = d3.nest()
+  .key(function(d) { return d.Ship; })
+  	.sortKeys(function(a,b) { return shipOrder.indexOf(a) - shipOrder.indexOf(b); })
+  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+  .entries(flatData2);
+
+var datapackLine = {'data':bootyByTime, 'xCol':'key', 'yCol':'values'};
+
+var datapackPirate = {'data':bootyByPrey, 'category':'key', 'amount':'values'};
+
+var pirateData = [{"key":"England","values":10337384},{"key":"France","values":12868349},{"key":"Spain","values":9685461},{"key":"Netherlands","values":15492140}];
+
+var pirateData2 = [{"key":"England","values":103384},{"key":"France","values":12868349},{"key":"Spain","values":9685461},{"key":"Netherlands","values":1549140}];
+
+var datapackPie = {'data':bootyByShip, 'category':'key', 'amount':'values'};
+
+var PieChart = function() {
+  var width = 300,
+    height = 300,
+    dom = "body"//"#pie",
+    color = d3.scale.category20(),
+    data = [];//pirateData;
+
+      makeChart = function() {
+          var radius = Math.min(width, height) / 2;
+          var enterAntiClockwise = {
+            startAngle: Math.PI * 2,
+            endAngle: Math.PI * 2
+          };
+
+          var pie = d3.layout.pie()
+            .sort(null);
+
+          var arc = d3.svg.arc()
+            .innerRadius(radius - 100)
+            .outerRadius(radius - 20);
+
+          var labelArc = d3.svg.arc()
+	        .outerRadius(radius - 40)
+	        .innerRadius(radius - 40);
+
+          var svg = d3.select(dom).append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+          var path = svg.selectAll("path")
+            .data(pie(data.map(function(d){return d[amount]})))
+            .enter().append("path")
+            .attr("fill", function(d, i) { return color(i); })
+            .attr("d", arc)
+            .each(function(d) { this._current = d; }); // store the initial values
+
+           
+             var t = svg.selectAll(".arc")
+	            .data(pie(data.map(function(d){return d[amount]})))
+	            .enter().append("g")
+	            .attr("class", "arc")
+	            .append("text")
+	            .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+	            .attr("text-anchor", "middle")
+	            .attr("dy", ".35em")
+	            .text("dsdfs");
+
+            
+
+          updatePie = function(nd){
+            path = path.data(pie(nd.map(function(d) {return d[amount]}))); // update the data
+
+            // set the start and end angles to Math.PI * 2 so we can transition
+            // anticlockwise to the actual values later
+            path.enter().append("path")
+                .attr("fill", function (d, i) {
+                  return color(i);
+                })
+                .attr("d", arc(enterAntiClockwise))
+                .each(function (d) {
+                  this._current = {
+                    data: d.data,
+                    value: d.value,
+                    startAngle: enterAntiClockwise.startAngle,
+                    endAngle: enterAntiClockwise.endAngle
+                  };
+                }); // store the initial values
+
+            path.exit()
+                .transition()
+                .duration(750)
+                .attrTween('d', arcTweenOut)
+                .remove() // now remove the exiting arcs
+
+            path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+
+            // my janky fix for transitioning text when data changes. I would like to have all the
+            // elements bound together and change together, but instead I'm doing each one separately
+            // and what's worse, removing text and creating afresh
+            svg.selectAll(".arc").remove()
+            var t = svg.selectAll(".arc")
+	            .data(pie(data.map(function(d){return d[amount]})))
+	            .enter().append("g")
+	            .attr("class", "arc")
+	            .append("text")
+	            .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+	            .attr("text-anchor", "middle")
+	            .attr("dy", ".35em")
+	            .text("dsdfs")
+	            .attr("opacity", 0);
+	        t.transition().duration(1000).attr("opacity",1)
+
+          }
+
+          // Store the displayed angles in _current.
+          // Then, interpolate from _current to the new angles.
+          // During the transition, _current is updated in-place by d3.interpolate.
+          function arcTween(a) {
+            var i = d3.interpolate(this._current, a);
+            this._current = i(0);
+            return function(t) {
+            return arc(i(t));
+            };
+          }
+          // Interpolate exiting arcs start and end angles to Math.PI * 2
+          // so that they 'exit' at the end of the data
+          function arcTweenOut(a) {
+            var i = d3.interpolate(this._current, {startAngle: Math.PI * 2, endAngle: Math.PI * 2, value: 0});
+            this._current = i(0);
+            return function (t) {
+              return arc(i(t));
+            };
+          }
+        };
+
+    // it takes in pivoted data similar to the bar graph. It changes it to pie() format
+    // inside the script
+    this.datapack = function(value) {
+      data = value.data;
+      category = value.category;
+      amount = value.amount
+      console.log("updateData called")
+      return this;
+    };
+
+    this.dom = function(value) {
+      dom = value;
+      console.log("updateDom called")
+      return this;
+    };
+
+    this.updatePie = function(nd) {
+      data = nd
+      updatePie(nd)
+      console.log("updatePie called")
+      return this;
+    }
+
+    this.make = function() {
+    makeChart();
+    return this;
+  };
+
+};
+
+
+
+// this is completely modular. It links to other charts by calling the updateOtherCharts(section) function
+// which passes the new segment of data. We want it to update itself, but don't want it hardcoded to 
+// other charts on the page. The section it passes to other charts on brush is the flat data it used to
+// update itselt
+
+var LineChart = function() {
+	var margin = {'top':10, 'right':20, 'bottom':30, 'left':30},
+	w = 300 - margin.top - margin.bottom,
+    h = 100 - margin.left - margin.right,
+    dom = "body",
+    data = [],//data,
+
+    makeChart = function() {
+
+		var svg = d3.select(dom)
+			.append("svg")
+			.attr('width', w + margin.left + margin.right)
+			.attr('height', h + margin.top + margin.bottom)
+		.append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var xScale = d3.time.scale()
+					.domain([d3.max(data, function(d) {return d[xCol]}), d3.min(data, function(d) {return d[xCol]})])
+					.range([0, w]);
+
+		var xAxis = d3.svg.axis()
+	        .scale(xScale)
+	        .orient("bottom")
+	        .outerTickSize(1);
+
+		var yScale = d3.scale.linear()
+						.domain([0, d3.max(data, function(d) {return d[yCol]})])
+						.rangeRound([h, 0]);
+
+	    var yAxis = d3.svg.axis()
+	        .scale(yScale)
+	        .orient("left")
+	        .outerTickSize(1);
+
+	    svg.append("g")
+	        .attr("class", "xaxis")
+	        .attr("transform", "translate(0," + h+ ")")
+	        .call(xAxis);
+
+	    svg.append("g")
+	        .attr("class", "yaxis")
+	        .call(yAxis);	
+
+	    var l = d3.svg.line()
+	      .x(function(d) {return xScale(d[xCol])})
+	      .y(function(d) {return yScale(d[yCol])});
+      
+    
+	    var line = svg.append("path")
+	        .datum(data)
+	        .attr("class", "line")
+	        //.attr("clip-path", "url(#clip)")
+	        .attr("d", l)
+	        .style("fill", "none")
+	        .style("stroke-width", 2)
+	        .style("stroke", "SteelBlue");
+
+	    updateLine = function() {
+
+			yScale.domain([0, d3.max(data, function(d) {return d[yCol]})]);
+			xScale.domain([d3.max(data, function(d) {return d[xCol]}), d3.min(data, function(d) {return d[xCol]})]);
+
+			svg.select(".yaxis").transition().duration(1000)
+				.call(yAxis);
+
+			svg.select(".xaxis").transition().duration(1000)
+				.call(xAxis);
+			
+			// transitioning to changed data
+			var l = d3.svg.line()
+		      .x(function(d) {return xScale(d[xCol])})
+		      .y(function(d) {return yScale(d[yCol])});
+
+			// fuck needed 'datum' instead of 'data'!!
+			line = svg.selectAll(".line").datum(data).transition().duration(1000)
+				.attr('d', l)
+				.attr("class", "line")
+		        .style("fill", "none")
+		        .style("stroke-width", 2)
+		        .style("stroke", "red");
+		};
+
+		/////////////////////////////////////////////////////////     
+		// adding brush
+		////////////////////////////////////////////////
+
+
+		var brush = d3.svg.brush()
+		  .x(xScale)
+		  .on("brush", function() {
+		      //xScale.domain(brush.extent()); // updating domain to reflect brush
+		      
+		      })
+		  .on("brushend", function () {
+		  		redrawChart();
+		      //updateZoomFromChart();
+		  });
+		function redrawChart() {          // drawing up new graphs
+
+		    var section = flatData
+		              .filter(function (d) {
+		                  if (brush.extent()[0] <= d['Date'] && d['Date'] <= brush.extent()[1]) {
+		                      return true
+		                  };
+		              }); 
+
+			var bootyByTimeSection = d3.nest()
+					  .key(function(d) { return d.Date; })
+					  		//got this sort from http://bl.ocks.org/phoebebright/raw/3176159/
+					  	//.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+					  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+					  .entries(section);
+
+			data = bootyByTimeSection;
+			updateLine();
+
+			// updating other charts. add a try except clause here. Did this bc wanted to keep this modular
+			// didn't want it hardcoded to other graphs if necessary
+			updateOtherCharts(section);
+
+			svg.selectAll(".brush").remove(); // removing elements from dom
+			brush.clear(); // clearing brush itself
+			appendBrush(); // adding new brush back on top, in case want to brush further
+		};
+
+		function appendBrush() {
+			svg.append("g")                 // adding brush to svgW
+			      .attr("class", "brush")
+			      .call(brush)
+			      .selectAll("rect")
+			      .attr("height", h)
+			      .style("opacity", .15);
+		}
+		appendBrush();
+
+    };
+
+	this.width = function(value) {
+		w = value;
+		console.log("width called");
+		return this;
+	};
+
+	this.height = function(value) {
+	    if (!arguments.length) return h;
+	    h = value;
+	    return this;
+	};
+
+	this.datapack = function(value) {
+		data = value.data;
+		xCol = value.xCol;
+		yCol = value.yCol
+		console.log("updateData called")
+		return this;
+	};
+
+	this.dom = function(value) {
+		dom = value;
+		console.log("updateDom called")
+		return this;
+	};
+
+	this.updateLine = function(nd) {
+		data = nd
+		updateLine();
+		console.log("updateLine called")
+		return this;
+	};
+
+	this.make = function() {
+		makeChart();
+		return this;
+	};
+};
+
+var BarChart = function() {
+	var margin = {'top':10, 'right':20, 'bottom':30, 'left':30},
+		w = 600 - margin.top - margin.bottom,
+	    h = 200 - margin.left - margin.right,
+	    dom = "body",
+	    data = [],//data,
+	    barSpace = 1;
+
+	makeChart = function() {
+		
+		//d3.selectAll('svg').remove();
+
+		var svg = d3.select(dom)
+					.append("svg")
+					.attr('width', w + margin.left + margin.right)
+					.attr('height', h + margin.top + margin.bottom)
+				.append("g")
+			        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var barWidth = w / (data.length + barSpace/2)
+
+		var xScale = d3.scale.ordinal()
+					.domain(data.map(function(d) { return d[category]}))
+					.rangeRoundBands([0, w], 0.05);
+
+		var xAxis = d3.svg.axis()
+	        .scale(xScale)
+	        .orient("bottom")
+	        .outerTickSize(1);
+
+		var yScale = d3.scale.linear()
+						.domain([0, d3.max(data, function(d) {return d[amount]})])
+						.rangeRound([h, 0]);
+
+	    var yAxis = d3.svg.axis()
+	        .scale(yScale)
+	        .orient("left")
+	        .outerTickSize(1);
+
+	    svg.append("g")
+	        .attr("class", "xaxis")
+	        .attr("transform", "translate(0," + h+ ")")
+	        .call(xAxis);
+
+	    svg.append("g")
+	        .attr("class", "yaxis")
+	        .call(yAxis);	
+
+		//svg.selectAll('rect').remove();
+		var bars = svg.selectAll("rect")
+			.data(data)
+			.enter()
+			.append("rect")
+			.attr("x", function(d) {
+				return xScale(d[category])
+			})
+			.attr('y', function(d) {
+				return yScale(d[amount])
+			})
+			.attr('width', barWidth)
+			.attr('height', function(d) {
+				return h - yScale(d[amount]);
+			})
+			.attr('fill', 'SteelBlue');
+
+		//holy shit Rudy, you don't have to be deleting and remaking--just change
+		//the attributes you idiot!! This changes everything...
+
+		// this is for updating bars for new data
+		updateBars = function() {
+
+			yScale.domain([0, d3.max(data, function(d) {return d[amount]})]);
+			xScale.domain(data.map(function(d) { return d[category]}));
+
+			svg.select(".yaxis").transition().duration(1000)
+				.call(yAxis);
+
+			svg.select(".xaxis").transition().duration(1000)
+				.call(xAxis);
+
+			barWidth = w / (data.length + barSpace/2)
+
+			//interesting, data has to be called before exit-remove.
+			// no new elements to add, just changing values of existing ones
+			//bars.data(data).exit().remove();
+			/*
+			// starting out new bars at zero for transfer in
+			bars.data(data).enter().append("rect")
+				.attr("x", function(d) {
+					return xScale(d[category]) + barWidth
+				})
+				.attr('y', h)
+				.attr('width', 0)
+				.attr('height', 0)
+				.attr('fill', 'SteelBlue');*/
+
+			// transitioning to changed data
+			bars = svg.selectAll("rect").data(data).transition().duration(1000)
+				.attr("x", function(d) {
+					return xScale(d[category])
+				})
+				.attr('y', function(d) {
+					return yScale(d[amount])
+				})
+				.attr('width', barWidth)
+				.attr('height', function(d) {
+					return h - yScale(d[amount])
+				})
+				.attr('fill', 'red');
+		};
+	};
+
+	// these are the getter and setter methods. after queing them up, must 
+	// send them through with the .make() function
+
+	this.width = function(value) {
+		w = value;
+		console.log("width called");
+		return this;
+	};
+
+	this.height = function(value) {
+        if (!arguments.length) return h;
+        h = value;
+        return this;
+    };
+
+	this.datapack = function(value) {
+		data = value.data;
+		category = value.category;
+		amount = value.amount
+		console.log("updateData called")
+		return this;
+	};
+
+	this.dom = function(value) {
+		dom = value;
+		console.log("updateDom called")
+		return this;
+	};
+
+	this.make = function() {
+		makeChart();
+		return this;
+	};
+
+	// does not require .make() function
+	this.updateBars = function(nd) {
+		data = nd
+		updateBars()
+		console.log("updateBars called")
+		return this;
+	};
+	//return makeChart(); if this is on, makes extra svg
+
+};
+
+// this takes in a section of flat data and updates other charts based on it
+function updateOtherCharts(section) {
+	var bootyByPreySection = d3.nest()
+	   .key(function(d) { return d.Prey; })
+	  	.sortKeys(function(a,b) { return preyOrder.indexOf(a) - preyOrder.indexOf(b); })
+	  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+	  .entries(section);
+
+	var bootyByShipSection = d3.nest()
+	   .key(function(d) { return d.Ship; })
+	  	.sortKeys(function(a,b) { return shipOrder.indexOf(a) - shipOrder.indexOf(b); })
+	  .rollup(function(v) { return d3.sum(v, function(d) { return d.bootyAmount; }); })
+	  .entries(section);
+
+	b.updateBars(bootyByPreySection);
+	p.updatePie(bootyByShipSection);
+};
+
+var b = new BarChart().dom("#bars").datapack(datapackPirate).width(800).height(200).make();
+
+var l = new LineChart().dom("#line").datapack(datapackLine).width(800).height(200).make();
+
+var p = new PieChart().datapack(datapackPie).dom("#pie").make();
+
+
+/*
+window.setTimeout(function() {
+    b.updateBars(bootyByPrey2);
+    l.updateLine(bootyByTime2);
+    p.updatePie(bootyByPrey2);
+}, 1000);
+*/
+
+
+</script>
